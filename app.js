@@ -1,7 +1,9 @@
+//Dependencies.
 const mysql = require(`mysql`);
 const inquirer = require(`inquirer`);
 const cTable = require(`console.table`);
 
+//Connection 
 const connection = mysql.createConnection({
     host: `localhost`,
     port: 3306,
@@ -16,7 +18,7 @@ const connection = mysql.createConnection({
     startPrompt();
 });
 
-
+//Initial Prompt.
 const startPrompt = () => {
     inquirer
       .prompt ([
@@ -95,12 +97,52 @@ const startPrompt = () => {
   };
 
 
+// "view All" functions 
+  const viewAllEmployees =() => {
+      connection.query(
+          `SELECT
+          employee.id,
+          employee.first_name,
+          employee.last_name,
+          role.title AS title,
+          role.salary AS salary,
+          CONCAT (manager.first_name, " ", manager.last_name) AS manager
+          FROM employee`,
 
-  const viewAllEmployees =() => {};
+          function (err, res) {
+              if (err) throw err;
+              console.table(res);
+              startPrompt(); 
+          }
+          
+      )
+  };
 
-  const viewAllRoles  = () => {};
+  const viewAllRoles  = () => {
+    connection.query(
+        `SELECT * FROM department`,
 
-  const viewAllDepartments = () => {};
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            startPrompt(); 
+        }
+        
+    )
+  };
+
+  const viewAllDepartments = () => {
+    connection.query(
+        `SELECT * FROM role`,
+
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            startPrompt(); 
+        }
+        
+    )
+  };
 
   const viewByManager =() => {};
 
@@ -121,6 +163,6 @@ const startPrompt = () => {
   const updateRole = () => {};
 
   const updateManager = () => {};
-  
+
   const viewDepartmentBudget = () => {};
   
