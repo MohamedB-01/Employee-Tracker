@@ -96,8 +96,34 @@ const startPrompt = () => {
       })
   };
 
+  const employeeArr = () => {
+    const employees = [];
+    connection.query('SELECT * from employee', function(err, res) {
+      if (err) throw err;
+      res.forEach(({ first_name }) => employees.push(first_name + last_name));
+    })
+    return employees;
+  };
 
-// "view All" functions 
+  const roleArr = () => {
+    const roles = [];
+    connection.query('SELECT * FROM role', function(err, res) {
+      if (err) throw err;
+      res.forEach(({ title }) => roles.push(title));
+    })
+    return roles;
+  };
+
+  const departmentArr = () => {
+    const departments = [];
+    connection.query('SELECT * from department', function(err, res) {
+      if (err) throw err;
+      res.forEach(({ department_name }) => departments.push(department_name));
+    })
+    return departments;
+  }
+
+//  functions 
   const viewAllEmployees =() => {
       connection.query(
           `SELECT
@@ -144,7 +170,9 @@ const startPrompt = () => {
     )
   };
 
-  const viewByManager =() => {};
+  const viewByManager =() => {
+    
+  };
 
   const viewByDepartment =() => {};
 

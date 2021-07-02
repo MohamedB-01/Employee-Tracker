@@ -15,13 +15,13 @@ VALUES
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES 
-("Mohamed", "Bassiouni", 1, 1), 
-("Shimaa", "Elshabouri", 2, 6), 
+("Mike", "J", 1, 1), 
+("Sue", "Kim", 2, 6), 
 ("Mariam", "Hassan", 4, 7), 
 ("Noor", "Abdo", 2, 7),
-("Sarah","Seif", 6, Null), 
-("Esraa","Awad", 6, Null), 
-("Ahmed", "Khamis", 6, Null)
-("Mai", "Jamal", 6, Null)
-("Mahmoud", "Basha", 6, Null)
-("Farida", "Elsherif", 6, Null)
+("Sarah","Seif", 6, 1), 
+("Randy","Smith", 4, 1), 
+("John", "Deer", 6, 5),
+("Malia", "Ramzy", 3, 2),
+("Joe", "Ortega", 6, 2),
+("Farida", "Davidson", 6, 3)
