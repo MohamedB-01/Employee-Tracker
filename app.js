@@ -146,7 +146,7 @@ const startPrompt = () => {
 
   const viewAllRoles  = () => {
     connection.query(
-        `SELECT * FROM department`,
+        `SELECT * FROM role`,
 
         function (err, res) {
             if (err) throw err;
@@ -159,7 +159,7 @@ const startPrompt = () => {
 
   const viewAllDepartments = () => {
     connection.query(
-        `SELECT * FROM role`,
+        `SELECT * FROM department `,
 
         function (err, res) {
             if (err) throw err;
@@ -174,7 +174,55 @@ const startPrompt = () => {
     
   };
 
-  const viewByDepartment =() => {};
+  const viewByDepartment =() => {
+    departmentArr();
+    connection.query("SELECT * FROM department", (err, results) => {
+      if (err) throw err;
+  
+      inquirer
+        .prompt ([
+          {
+            type: "list",
+            name: "departmentList",
+            message: "Please select a department from the list below to view department members.",
+            choices: departments,
+          },
+      
+        ])
+        .then ((answer) => {
+        
+          let departmentId;
+  
+          departmentArray.forEach ((item)=>{
+            if(item.departmentName === answer.departmentList) {
+              return departmentId = item.id;
+            }
+          });
+
+          connection.query(
+            `SELECT 
+            employee.id, 
+            employee.first_name, 
+            employee.last_name, 
+            CONCAT (manager.first_name, " ", manager.last_name) AS manager, role.title AS title, role.salary AS salary, department.name AS department
+            FROM employee
+            LEFT JOIN role on employee.role_id = role.id 
+            JOIN department on role.department_id = department.id
+            LEFT JOIN employee AS manager ON employee.manager_id = manager.id
+            WHERE role.department_id = ${departmentId}`,
+
+            function (err, res) {
+              if (err) throw err;
+              if (res.length === 0) {
+                console.log("That department does not have any employees.")
+              }
+              else{
+              console.table(res);
+              startPrompt();
+              }
+            });
+          })
+    })};
 
   const addEmployee =() => {};
 
