@@ -193,7 +193,7 @@ const startPrompt = () => {
         
           let departmentId;
   
-          departmentArray.forEach ((item)=>{
+          departments.forEach ((item)=>{
             if(item.departmentName === answer.departmentList) {
               return departmentId = item.id;
             }
@@ -228,7 +228,32 @@ const startPrompt = () => {
 
   const addRole = () => {};
 
-  const addDepartment = () => {};
+
+
+  const addDepartment = () => {
+    inquirer
+      .prompt([
+        {
+          name: "newDepartment",
+          type: "input",
+          message: "Please enter the new department name.",
+        },
+      ])
+      .then((answer) => {
+
+      connection.query("INSERT INTO departments ?",
+        {
+          name: answer.newDepartment,
+        },
+        (err) => {
+          if (err) throw err;
+          startPrompt();
+
+        });
+    });
+
+
+  };
 
   const removeEmployee = () => {};
 
