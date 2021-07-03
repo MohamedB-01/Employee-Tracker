@@ -26,6 +26,7 @@ CREATE TABLE employee (
   last_name VARCHAR(30) NOT NULL,
   role_id INT,
   manager_id INT,
+  isManager BOOLEAN DEFAULT (false), 
   FOREIGN KEY (role_id) 
     REFERENCES `role`(id)
     ON DELETE CASCADE,
