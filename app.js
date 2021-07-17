@@ -25,7 +25,7 @@ const startPrompt = () => {
         {
           type: `list`,
           name: `options`,
-          message: `To get started, please choose from the following options.`,
+          message: ` Please choose from the following options.`,
           choices: 
             [
               `View all employees`, 
@@ -96,6 +96,8 @@ const startPrompt = () => {
       })
   };
 
+  const employees = [];
+
   const employeeArr = () => {
     const employees = [];
     connection.query('SELECT * from employee', function(err, res) {
@@ -105,14 +107,7 @@ const startPrompt = () => {
     return employees;
   };
 
-  const managerArr = () => {
-    const managers = [];
-    connection.query('SELECT * from employee WHERE isManager = true', function(err, res) {
-      if (err) throw err;
-      res.forEach(({ first_name }) => employees.push(first_name + last_name));
-    })
-    return managers;
-  };
+  
 
   const roleArr = () => {
     const roles = [];
@@ -123,26 +118,20 @@ const startPrompt = () => {
     return roles;
   };
 
-  const departmentArr = () => {
-    const departments = [];
-    connection.query('SELECT * from department', function(err, res) {
-      if (err) throw err;
-      res.forEach(({ department_name }) => departments.push(department_name));
-    })
-    return departments;
-  }
+  // const departments = [];
+  // const departmentArr = () => {
+    
+  //   connection.query('SELECT * from department', function(err, res) {
+  //     if (err) throw err;
+  //     res.forEach(({ department_name }) => departments.push(department_name));
+  //   })
+  //   return departments;
+  // }
 
 //  functions 
   const viewAllEmployees =() => {
       connection.query(
-          `SELECT
-          employee.id,
-          employee.first_name,
-          employee.last_name,
-          role.title AS title,
-          role.salary AS salary,
-          CONCAT (manager.first_name, " ", manager.last_name) AS manager
-          FROM employee`,
+          `SELECT * FROM employee`,
 
           function (err, res) {
               if (err) throw err;
@@ -180,10 +169,19 @@ const startPrompt = () => {
   };
 
   const viewByManager =() => {
-    managerArr();
+    
+
+    
 
     connection.query("SELECT * FROM employee WHERE isManager = true", (err, results) => {
       if (err) throw err;
+      let managers = [];
+
+      results.forEach(() =>{ managers.push(results.first_name + results.last_name);
+        return managers;
+      });
+       
+       
   
       inquirer
         .prompt ([
@@ -231,9 +229,14 @@ const startPrompt = () => {
   
 
   const viewByDepartment =() => {
-    departmentArr();
-    connection.query("SELECT * FROM department", (err, results) => {
+    // departmentArr();
+    connection.query("SELECT * FROM department", (err, res) => {
       if (err) throw err;
+      let departments = [];
+
+      res.forEach(() =>{departments.push(res.department_name);
+      return departments;
+      });
   
       inquirer
         .prompt ([
@@ -285,9 +288,7 @@ const startPrompt = () => {
 
 
   const addEmployee = () => {
-    managerArr();
-    roleArr();
-    departmentArr();
+    
 
     inquirer
       .prompt([
@@ -360,8 +361,20 @@ const startPrompt = () => {
 
 
   const addRole = () => {
-    departmentArr();
-    
+    connection.query("SELECT * FROM department", (err, results) => {
+      if (err) throw err;
+  
+      let departments = [];
+  
+        results.forEach(({ id, name }) => {
+          departments.push({id: id, departmentName: name });
+        })
+        departmentList = []; 
+
+        results.forEach(({ id, name }) => {
+          departmentList.push(name);
+        })
+  
     
       inquirer
         .prompt([
@@ -379,7 +392,7 @@ const startPrompt = () => {
             name: "department",
             type: "list",
             message: "Please enter the new role's department.",
-            choices: departments,
+            choices: departmentList,
           },
         ])
         .then((answer) => {
@@ -404,6 +417,8 @@ const startPrompt = () => {
   
             });
         });
+
+    });
   
   };
 
@@ -425,7 +440,7 @@ const startPrompt = () => {
       ])
       .then((answer) => {
 
-      connection.query("INSERT INTO departments ?",
+      connection.query("INSERT INTO department SET ?",
         {
           name: answer.newDepartment,
         },
