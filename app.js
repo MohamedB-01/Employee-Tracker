@@ -105,7 +105,15 @@ const startPrompt = () => {
 
   const viewAllEmployees =() => {
       connection.query(
-          `SELECT * FROM employee`,
+          `SELECT 
+          employee.id, 
+          employee.first_name, 
+          employee.last_name, 
+          CONCAT (manager.first_name, " ", manager.last_name) AS manager, role.title AS title, role.salary AS salary, department.name AS department
+          FROM employee
+          LEFT JOIN role on employee.role_id = role.id 
+          LEFT JOIN department on role.department_id = department.id
+          JOIN employee AS manager ON employee.manager_id = manager.id`,
 
           function (err, res) {
               if (err) throw err;
