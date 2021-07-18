@@ -172,9 +172,6 @@ const startPrompt = () => {
 
   const viewByManager =() => {
     
-
-    
-
     connection.query("SELECT * FROM employee WHERE isManager = true", (err, results) => {
       if (err) throw err;
 
@@ -183,14 +180,12 @@ const startPrompt = () => {
       results.forEach(({ id, first_name, last_name  }) => {
         managers.push({id: id, managerName: first_name + " " + last_name });
       })
-      managerList = []; 
+      let managerList = []; 
 
       results.forEach(({ first_name, last_name  }) => {
         managerList.push(first_name + " " + last_name );
       })
        
-       
-  
       inquirer
         .prompt ([
           {
@@ -305,71 +300,107 @@ const startPrompt = () => {
 
 
   const addEmployee = () => {
-    
 
-    inquirer
-      .prompt([
-        {
-          name: "firstName",
-          type: "input",
-          message: "Please enter the Employee's first name.",
-        },
-        {
-          name: "lastName",
-          type: "input",
-          message: "Please enter the Employee's last name.",
-        },
-        {
-          name: "role",
-          type: "list",
-          message: "Please select the Employee role from the list below.",
-          choices: roles,
-        },
-        {
-          name: "isManager",
-          type: "confirm",
-          message: "Is the employee a manager with direct reports? ",
-        },
-        {
-          name: "manager",
-          type: "list",
-          message: "Please assign a manager from the list below.",
-         choices: managers,
-        },
-      ])
-      .then((answer) => {
+    connection.query("SELECT * FROM employee WHERE isManager = true", (err, results) => {
+      if (err) throw err;
 
-        let roleId;
+      let managers = [];
 
-        roles.forEach ((item)=>{
-          if(item.title === answer.role) {
-            return roleId = item.id;
-          }
-        })
+      results.forEach(({ id, first_name, last_name  }) => {
+        managers.push({id: id, managerName: first_name + " " + last_name });
+      })
+      let managerList = []; 
 
-        let managerId; 
+      results.forEach(({ first_name, last_name  }) => {
+        managerList.push(first_name + " " + last_name );
+      })
+      
+      
+            connection.query("SELECT * FROM role", (err, results) => {
+              if (err) throw err;
+          
+              let roles = [];
+          
+                results.forEach(({ id, title, department_id }) => {
+                  roles.push({id: id, title: title, department_id: department_id  });
+                })
+        
+                let roleList = []; 
+        
+                results.forEach(({ title  }) => {
+                  roleList.push(title );
+                })
 
-        managers.forEach ((item)=>{
-          if(item.managerName === answer.manager) {
-            return managerId = item.id;
-          }
-        })
+        
+        
 
-        connection.query("INSERT INTO employee SET ?",
-        {
-          first_name: answer.firstName,
-          last_name: answer.lastName,
-          role_id: roleId,
-          manager_id: managerId,
-        },
-        (err) => {
-          if (err) throw err;
-          startPrompt();
+                    inquirer
+                      .prompt([
+                        {
+                          name: "firstName",
+                          type: "input",
+                          message: "Please enter the Employee's first name.",
+                        },
+                        {
+                          name: "lastName",
+                          type: "input",
+                          message: "Please enter the Employee's last name.",
+                        },
+                        {
+                          name: "role",
+                          type: "list",
+                          message: "Please select the Employee role from the list below.",
+                          choices: roleList,
+                        },
+                        {
+                          name: "isManager",
+                          type: "confirm",
+                          message: "Is the employee a manager with direct reports? ",
+                        },
+                        {
+                          name: "manager",
+                          type: "list",
+                          message: "Please assign a manager from the list below.",
+                        choices: managerList,
+                        },
+                      ])
+                      .then((answer) => {
 
-        });
+                        let roleId;
+
+                        roles.forEach ((item)=>{
+                          if(item.title === answer.role) {
+                            return roleId = item.id;
+                          }
+                        })
+
+                        let managerId; 
+
+                        managers.forEach ((item)=>{
+                          if(item.managerName === answer.manager) {
+                            return managerId = item.id;
+                          }
+                        })
+
+                        connection.query("INSERT INTO employee SET ?",
+                        {
+                          first_name: answer.firstName,
+                          last_name: answer.lastName,
+                          role_id: roleId,
+                          manager_id: managerId,
+                        },
+                        (err) => {
+                          if (err) throw err;
+                          startPrompt();
+
+                        });
+                    });
+
+          });
+
     });
   
-  };
+};
 
 
 
@@ -534,7 +565,7 @@ const startPrompt = () => {
       let roles = [];
   
         results.forEach(({ id, title, department_id }) => {
-          departments.push({id: id, title: title, department_id: department_id  });
+          roles.push({id: id, title: title, department_id: department_id  });
         })
 
         roleList = []; 
