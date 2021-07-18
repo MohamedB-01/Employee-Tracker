@@ -17,7 +17,7 @@ const connection = mysql.createConnection({
     
     startPrompt();
 });
-
+//=============================================================================================================
 //Initial Prompt.
 const startPrompt = () => {
     inquirer
@@ -96,39 +96,13 @@ const startPrompt = () => {
       })
   };
 
-  const employees = [];
 
-  const employeeArr = () => {
-    const employees = [];
-    connection.query('SELECT * from employee', function(err, res) {
-      if (err) throw err;
-      res.forEach(({ first_name }) => employees.push(first_name + last_name));
-    })
-    return employees;
-  };
+//===============================================================================================================================================
 
-  
-
-  const roleArr = () => {
-    const roles = [];
-    connection.query('SELECT * FROM role', function(err, res) {
-      if (err) throw err;
-      res.forEach(({ title }) => roles.push(title));
-    })
-    return roles;
-  };
-
-  // const departments = [];
-  // const departmentArr = () => {
-    
-  //   connection.query('SELECT * from department', function(err, res) {
-  //     if (err) throw err;
-  //     res.forEach(({ department_name }) => departments.push(department_name));
-  //   })
-  //   return departments;
-  // }
 
 //  functions 
+
+
   const viewAllEmployees =() => {
       connection.query(
           `SELECT * FROM employee`,
@@ -141,7 +115,7 @@ const startPrompt = () => {
           
       )
   };
-
+//=================================================================================================================================================
   const viewAllRoles  = () => {
     connection.query(
         `SELECT * FROM role`,
@@ -154,7 +128,7 @@ const startPrompt = () => {
         
     )
   };
-
+//=====================================================================================================================================================
   const viewAllDepartments = () => {
     connection.query(
         `SELECT * FROM department `,
@@ -168,7 +142,7 @@ const startPrompt = () => {
     )
   };
 
-
+//=======================================================================================================================================================
 
   const viewByManager =() => {
     
@@ -231,7 +205,7 @@ const startPrompt = () => {
   })};
   
 
-
+//==========================================================================================================================================================
 
   const viewByDepartment =() => {
     connection.query("SELECT * FROM department", (err, results) => {
@@ -297,7 +271,7 @@ const startPrompt = () => {
 
 
 
-
+//======================================================================================================================================================================
 
   const addEmployee = () => {
 
@@ -404,7 +378,7 @@ const startPrompt = () => {
 
 
 
-
+//=========================================================================================================================================
 
 
 
@@ -473,7 +447,7 @@ const startPrompt = () => {
 
 
 
-
+//===================================================================================================================================
 
 
 
@@ -503,7 +477,7 @@ const startPrompt = () => {
   };
 
 
-
+//=====================================================================================================================
 
 
   const removeEmployee = () => {
@@ -555,7 +529,7 @@ const startPrompt = () => {
   };
 
 
-
+//===============================================================================================================
 
 
   const removeRole = () => {
@@ -611,7 +585,7 @@ const startPrompt = () => {
   });
   };
 
-
+//===============================================================================================================
 
 
   const removeDepartment = () => {
@@ -669,112 +643,169 @@ const startPrompt = () => {
   };
 
 
-
+//========================================================================================================================
 
 
   const updateRole = () => {
-    roleArr();
-    employeeArr();
+    connection.query("SELECT * FROM employee", (err, results) => {
+      if (err) throw err;
+  
+      let employees = [];
+  
+        results.forEach(({ id, first_name, last_name  }) => {
+          employees.push({id: id, employeeName: first_name + " " + last_name });
+        })
+        employeeList = []; 
 
-    inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "employee",
-        message: "Please select an employee to update.",
-        choices: employees,
-      }, 
-      {
-        type: "list",
-        name: "updatedRole",
-        message: "Please select a role to assign.",
-        choices: roles,
-      },
-  ])
-  .then ((answer) => {
-    
-    let employeeId;
+        results.forEach(({ first_name, last_name  }) => {
+          employeeList.push(first_name + " " + last_name );
+        })
 
-    employees.forEach ((item)=>{
-      if(item.employeeName === answer.employee) {
-        return employeeId = item.id;
-      }
-    });
+            connection.query("SELECT * FROM role", (err, results) => {
+              if (err) throw err;
+          
+              let roles = [];
+          
+                results.forEach(({ id, title, department_id }) => {
+                  roles.push({id: id, title: title, department_id: department_id  });
+                })
+        
+                roleList = []; 
+        
+                results.forEach(({ title  }) => {
+                  roleList.push(title );
+                })
 
-    let roleId;
+                      inquirer
+                      .prompt([
+                        {
+                          type: "list",
+                          name: "employee",
+                          message: "Please select an employee to update.",
+                          choices: employeeList,
+                        }, 
+                        {
+                          type: "list",
+                          name: "updatedRole",
+                          message: "Please select a role to assign.",
+                          choices: roleList,
+                        },
+                    ])
+                    .then ((answer) => {
+                      
+                      let employeeId;
 
-    roles.forEach ((item)=>{
-      if(item.title === answer.updatedRole) {
-        return roleId = item.id;
-      }
-    });
+                      employees.forEach ((item)=>{
+                        if(item.employeeName === answer.employee) {
+                          return employeeId = item.id;
+                        }
+                      });
 
-    connection.query(
-      `UPDATE employee SET role_id = ${roleId} WHERE id = ${employeeId}`,
-      (err) => {
-        if (err) throw err;
-        startPrompt();
-      });
-  })
+                      let roleId;
 
+                      roles.forEach ((item)=>{
+                        if(item.title === answer.updatedRole) {
+                          return roleId = item.id;
+                        }
+                      });
+
+                      connection.query(
+                        `UPDATE employee SET role_id = ${roleId} WHERE id = ${employeeId}`,
+                        (err) => {
+                          if (err) throw err;
+                          startPrompt();
+                        });
+                    })
+          });
+
+       });
   };
 
 
 
-
+//========================================================================================================================================
 
 
   const updateManager = () => {
-    managerArr();
-    employeeArr();
+    
+    connection.query("SELECT * FROM employee", (err, results) => {
+      if (err) throw err;
+  
+      let employees = [];
+  
+        results.forEach(({ id, first_name, last_name  }) => {
+          employees.push({id: id, employeeName: first_name + " " + last_name });
+        })
+        employeeList = []; 
+
+        results.forEach(({ first_name, last_name  }) => {
+          employeeList.push(first_name + " " + last_name );
+        })
+
+                connection.query("SELECT * FROM employee WHERE isManager = true", (err, results) => {
+                  if (err) throw err;
+            
+                  let managers = [];
+            
+                  results.forEach(({ id, first_name, last_name  }) => {
+                    managers.push({id: id, managerName: first_name + " " + last_name });
+                  })
+                  let managerList = []; 
+            
+                  results.forEach(({ first_name, last_name  }) => {
+                    managerList.push(first_name + " " + last_name );
+                  })
 
 
-    inquirer
-    .prompt([
-        {
-          type: "list",
-          name: "employee",
-          message: "Please select an employee to update.",
-          choices: employees,
-        }, 
-        {
-          type: "list",
-          name: "updatedManager",
-          message: "Please select a manager to assign.",
-          choices: managers,
-        },
-    ])
-    .then ((answer) => {
-      console.log(answer);
-      
-      let employeeId;
+                              inquirer
+                              .prompt([
+                                  {
+                                    type: "list",
+                                    name: "employee",
+                                    message: "Please select an employee to update.",
+                                    choices: employeeList,
+                                  }, 
+                                  {
+                                    type: "list",
+                                    name: "updatedManager",
+                                    message: "Please select a manager to assign.",
+                                    choices: managerList,
+                                  },
+                              ])
+                              .then ((answer) => {
+                                console.log(answer);
+                                
+                                let employeeId;
 
-      employees.forEach ((item)=>{
-        if(item.employeeName === answer.employee) {
-          return employeeId = item.id;
-        }
-      });
+                                employees.forEach ((item)=>{
+                                  if(item.employeeName === answer.employee) {
+                                    return employeeId = item.id;
+                                  }
+                                });
 
-      let managerId;
+                                let managerId;
 
-      managers.forEach ((item)=>{
-        if(item.managerName === answer.updatedManager) {
-          return managerId = item.id;
-        }
-      });
+                                managers.forEach ((item)=>{
+                                  if(item.managerName === answer.updatedManager) {
+                                    return managerId = item.id;
+                                  }
+                                });
 
-      connection.query(
-        `UPDATE employee SET manager_id = ${managerId} WHERE id = ${employeeId}`,
-        (err) => {
-          if (err) throw err;
-          startPrompt();
-        });
-    })
+                                connection.query(
+                                  `UPDATE employee SET manager_id = ${managerId} WHERE id = ${employeeId}`,
+                                  (err) => {
+                                    if (err) throw err;
+                                    startPrompt();
+                                  });
+                              })
+                });
 
-  };
+      });                    
+
+};
 
 
-
+//===========================================================================================================================================
 
   const viewDepartmentBudget = () => {
     connection.query("SELECT * FROM department", (err, results) => {
