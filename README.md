@@ -34,11 +34,11 @@ a Node.js command-line application that allows the user to:
 ## Usage
 please refer to the video
 
-[Link](https://drive.google.com/file/d/10-qfwwdonKVYZANM2aW7Mf6J2-kgFS4a/view)
+[Link](https://drive.google.com/file/d/1Ojdp08i1zBrGSre1SGQcvtoxR5HAXttg/view)
 
 Demo 
 
-![Demo](assets/Team-profile-generator.gif)
+![Demo](assets/Employee-tracker.gif)
         
 ## Contribution
 Mohamed Bassiouni
@@ -58,7 +58,7 @@ GitHub: [MohamedB-01](https://github.com/MohamedB-01).
 For inquiries, please contact m.m.bassiouni@gmail.com.
     
 ## Link to Repository 
-https://github.com/MohamedB-01/Team-Profile-Generator
+https://github.com/MohamedB-01/Employee-Tracker
     
 ## Link to Deployed page
 NA

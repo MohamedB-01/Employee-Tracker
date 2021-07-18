@@ -635,16 +635,17 @@ const startPrompt = () => {
         },
         (err) => {
           if (err) throw err;
-          startPrompt();
-
+         
         });
 
-      connection.query(
-        `UPDATE role SET department_id = NULL WHERE department_id = ${departmentID}`,
-        (err) => {
-          if (err) throw err;
-          menu();
-        });
+        connection.query(
+          `UPDATE role SET department_id = NULL WHERE department_id = ${departmentID}`,
+          (err) => {
+            if (err) throw err;
+            startPrompt();
+          });
+
+      
     });
 
   });
