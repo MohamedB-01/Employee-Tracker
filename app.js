@@ -168,6 +168,8 @@ const startPrompt = () => {
     )
   };
 
+
+
   const viewByManager =() => {
     
 
@@ -175,11 +177,17 @@ const startPrompt = () => {
 
     connection.query("SELECT * FROM employee WHERE isManager = true", (err, results) => {
       if (err) throw err;
+
       let managers = [];
 
-      results.forEach(() =>{ managers.push(results.first_name + results.last_name);
-        return managers;
-      });
+      results.forEach(({ id, first_name, last_name  }) => {
+        managers.push({id: id, managerName: first_name + " " + last_name });
+      })
+      managerList = []; 
+
+      results.forEach(({ first_name, last_name  }) => {
+        managerList.push(first_name + " " + last_name );
+      })
        
        
   
@@ -189,7 +197,7 @@ const startPrompt = () => {
             type: "list",
             name: "managerList",
             message: "Please select a manager from the list below to view their team.",
-            choices: managers, 
+            choices: managerList, 
           },
         ])
         .then ((answer) => {
@@ -228,15 +236,22 @@ const startPrompt = () => {
   })};
   
 
-  const viewByDepartment =() => {
-    // departmentArr();
-    connection.query("SELECT * FROM department", (err, res) => {
-      if (err) throw err;
-      let departments = [];
 
-      res.forEach(() =>{departments.push(res.department_name);
-      return departments;
-      });
+
+  const viewByDepartment =() => {
+    connection.query("SELECT * FROM department", (err, results) => {
+      if (err) throw err;
+  
+      let departments = [];
+  
+        results.forEach(({ id, name }) => {
+          departments.push({id: id, departmentName: name });
+        })
+        departmentList = []; 
+
+        results.forEach(({ id, name }) => {
+          departmentList.push(name);
+        })
   
       inquirer
         .prompt ([
@@ -244,7 +259,7 @@ const startPrompt = () => {
             type: "list",
             name: "departmentList",
             message: "Please select a department from the list below to view department members.",
-            choices: departments,
+            choices: departmentList,
           },
       
         ])
@@ -280,7 +295,9 @@ const startPrompt = () => {
               startPrompt();
               }
             });
-          })
+          });
+
+        
     })};
 
 
@@ -459,7 +476,19 @@ const startPrompt = () => {
 
 
   const removeEmployee = () => {
-    employeeArr();
+    connection.query("SELECT * FROM employee", (err, results) => {
+      if (err) throw err;
+  
+      let employees = [];
+  
+        results.forEach(({ id, first_name, last_name  }) => {
+          employees.push({id: id, employeeName: first_name + " " + last_name });
+        })
+        employeeList = []; 
+
+        results.forEach(({ first_name, last_name  }) => {
+          employeeList.push(first_name + " " + last_name );
+        })
 
     inquirer
       .prompt([
@@ -467,7 +496,7 @@ const startPrompt = () => {
           type: "list",
           name: "employeeList",
           message: "Please select an employee to remove.",
-          choices: employees,
+          choices: employeeList,
         }
     ])
     .then ((answer) => {
@@ -489,18 +518,37 @@ const startPrompt = () => {
           startPrompt();
 
         });
-      })   
+      });
+      
+    });
   };
 
+
+
+
+
   const removeRole = () => {
-    roleArr();
+    connection.query("SELECT * FROM role", (err, results) => {
+      if (err) throw err;
+  
+      let roles = [];
+  
+        results.forEach(({ id, title, department_id }) => {
+          departments.push({id: id, title: title, department_id: department_id  });
+        })
+
+        roleList = []; 
+
+        results.forEach(({ title  }) => {
+          roleList.push(title );
+        })
     inquirer
       .prompt([
         {
           type: "list",
           name: "roleList",
           message: "Please select a role to remove.",
-          choices: roles,
+          choices: roleList,
         }
     ])
     .then ((answer) => {
@@ -527,18 +575,35 @@ const startPrompt = () => {
           if (err) throw err;
           startPrompt();
         });
-    })
+    });
+
+  });
   };
 
+
+
+
   const removeDepartment = () => {
-    departmentArr();
+    connection.query("SELECT * FROM department", (err, results) => {
+      if (err) throw err;
+  
+      let departments = [];
+  
+        results.forEach(({ id, name }) => {
+          departments.push({id: id, departmentName: name });
+        })
+        departmentList = []; 
+
+        results.forEach(({ id, name }) => {
+          departmentList.push(name);
+        })
     inquirer
       .prompt([
         {
           type: "list",
           name: "departmentList",
           message: "Please select a department to remove.",
-          choices: departments,
+          choices: departmentList,
         }
     ])
     .then ((answer) => {
@@ -568,7 +633,11 @@ const startPrompt = () => {
           menu();
         });
     });
+
+  });
   };
+
+
 
 
 
@@ -619,6 +688,11 @@ const startPrompt = () => {
 
   };
 
+
+
+
+
+
   const updateManager = () => {
     managerArr();
     employeeArr();
@@ -668,9 +742,23 @@ const startPrompt = () => {
 
   };
 
-  const viewDepartmentBudget = () => {
-    departmentArr();
 
+
+
+  const viewDepartmentBudget = () => {
+    connection.query("SELECT * FROM department", (err, results) => {
+      if (err) throw err;
+  
+      let departments = [];
+  
+        results.forEach(({ id, name }) => {
+          departments.push({id: id, departmentName: name });
+        })
+        departmentList = []; 
+
+        results.forEach(({ id, name }) => {
+          departmentList.push(name);
+        })
 
     inquirer
       .prompt([
@@ -678,7 +766,7 @@ const startPrompt = () => {
           type: "list",
           name: "departmentList",
           message: "Please select a department to review.",
-          choices: departments,
+          choices: departmentList,
         }
     ])
     .then ((answer) => {
@@ -707,5 +795,7 @@ const startPrompt = () => {
             startPrompt();
         });
     })
+
+  });
   };
   
